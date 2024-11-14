@@ -1,0 +1,32 @@
+# Binaries for programs and tests
+/target
+
+# If you're using Cargo (Rust package manager)
+**/*.rs.bk
+
+# Logs and debug files
+*.log
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Mac-specific files
+.DS_Store
+
+# IDE-specific files (e.g., VSCode)
+.vscode/
+.idea/
+
+# Temporary files created by the OS
+*.swp
+*.swo
+*.bak
+*~
+
+# Other potentially large files
+*.lock
+*.tmp
+*.temp
+*.log
