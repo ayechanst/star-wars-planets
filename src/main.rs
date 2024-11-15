@@ -1,16 +1,18 @@
 mod helpers;
 mod models;
-use helpers::count_climates;
+use helpers::{count_climates, sort_population};
 use models::{Planet, PlanetsResponse};
 use reqwest::Error;
 // let response = reqwest::get(next_url).await?.text().await?;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let planets = get_planets().await?;
-    let climates = count_climates(&planets);
+    let mut planets = get_planets().await?;
+    // let climates = count_climates(&planets);
+    let populations = sort_population(&mut planets);
+    println!("{:#?}", populations);
     // println!("{:#?}", planets);
-    println!("{:#?}", climates);
+    // println!("{:#?}", climates);
     Ok(())
 }
 
