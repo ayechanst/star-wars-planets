@@ -6,6 +6,8 @@ pub struct Planet {
     pub rotation_period: String,
     pub orbital_period: String,
     pub diameter: String,
+    pub surface_area: f32,
+    pub comparison_factor: f32,
     pub climate: String,
     pub gravity: String,
     pub terrain: String,
