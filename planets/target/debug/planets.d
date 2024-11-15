@@ -1,1 +1,0 @@
-/Users/ayechan/projects/star-wars-planets/planets/target/debug/planets: /Users/ayechan/projects/star-wars-planets/planets/src/helpers.rs /Users/ayechan/projects/star-wars-planets/planets/src/main.rs /Users/ayechan/projects/star-wars-planets/planets/src/models.rs
