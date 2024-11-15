@@ -1,38 +1,42 @@
+mod helpers;
+mod models;
+use helpers::count_climates;
+use models::{Planet, PlanetsResponse};
 use reqwest::Error;
-use serde::Deserialize;
-// use std::env;
-
-// fn main() {
-//     let args: Vec<String> = env::args().collect();
-//     let program = args[0]
-//     for i in &args {
-//         println!("{}", i);
-//     }
-//     println!("{:?}", args);
-// }
-#[derive(Deserialize, Debug)]
-struct Planet {
-    object_id: String,
-    name: String,
-    climate: Vec<String>,
-    diameter: Option<u64>,
-    films: Vec<String>,
-    gravity: String,
-    orbital_period: Option<u64>,
-    population: Option<String>,
-    residents: Vec<String>,
-    rotation_period: Option<u64>,
-    species: Vec<String>,
-    surface_water: Option<f64>,
-    terrain: Vec<String>,
-}
+// let response = reqwest::get(next_url).await?.text().await?;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let request_url = "https://swapi.dev/api/planets/2/";
-    let response = reqwest::get(request_url).await?.json::<Planet>().await?;
-
-    println!("{:#?}", response);
-
+    let planets = get_planets().await?;
+    let climates = count_climates(&planets);
+    // println!("{:#?}", planets);
+    println!("{:#?}", climates);
     Ok(())
+}
+
+async fn get_planets() -> Result<Vec<Planet>, Error> {
+    let mut planets = Vec::<Planet>::new();
+    let mut next_url = Some("https://swapi.dev/api/planets".to_string());
+
+    while let Some(url) = next_url {
+        let response = reqwest::get(&url).await?.json::<PlanetsResponse>().await?;
+
+        for swapi_planet in response.results {
+            let simple_planet = Planet {
+                name: swapi_planet.name,
+                rotation_period: swapi_planet.rotation_period, // time taken to rotate around its poles
+                orbital_period: swapi_planet.orbital_period,   // time taken to orbit it's star
+                diameter: swapi_planet.diameter,
+                climate: swapi_planet.climate,
+                gravity: swapi_planet.gravity,
+                terrain: swapi_planet.terrain,
+                surface_water: swapi_planet.surface_water,
+                population: swapi_planet.population,
+                url: swapi_planet.url,
+            };
+            planets.push(simple_planet);
+        }
+        next_url = response.next;
+    }
+    Ok(planets)
 }
