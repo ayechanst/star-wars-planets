@@ -1,13 +1,8 @@
-#[macro_use]
-extern crate rocket;
+use rocket::{launch, routes};
 mod helpers;
 mod models;
 mod routes;
-use helpers::{count_climates, find_surface_area, sort_population, surface_area_relative_to_earth};
-use models::{Planet, PlanetsResponse};
-use reqwest::Error;
-use rocket::serde::json::Json;
-use routes::all_planets;
+use routes::planets::all_planets;
 
 // let response = reqwest::get(next_url).await?.text().await?;
 

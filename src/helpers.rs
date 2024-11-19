@@ -1,6 +1,4 @@
-// mod models;
 use crate::models::{self, Planet, PlanetsResponse, SwapiPlanet};
-// use models::{Planet, PlanetsResponse};
 use reqwest::Error;
 use std::collections::HashMap;
 
