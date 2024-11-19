@@ -13,7 +13,37 @@ pub fn sort_population(planets: &mut Vec<Planet>) {
     });
 }
 
+pub fn sort_by_size(planets: &mut Vec<Planet>) {
+    planets.sort_by(|a, b| {
+        let size_a = a.surface_area as u64;
+        let size_b = b.surface_area as u64;
+        size_b.cmp(&size_a)
+    })
+}
+
+pub fn sort_population_density(planets: &mut Vec<Planet>) {
+    planets.sort_by(|a, b| {
+        let pop_density_a = a.population_density as u64;
+        let pop_density_b = b.population_density as u64;
+        pop_density_b.cmp(&pop_density_a)
+    });
+}
+
 ////////////////////////////// HELPERS /////////////////////////////////////
+
+pub fn find_population_density(surface_area: f32, population_string: &String) -> f32 {
+    let parsed_population: Result<i64, _> = population_string.parse();
+    match parsed_population {
+        Ok(pop) => {
+            if surface_area != 0.0 {
+                pop as f32 / surface_area
+            } else {
+                f32::NAN
+            }
+        }
+        Err(_) => f32::NAN,
+    }
+}
 
 pub fn find_surface_area(planet_diameter: &String) -> f32 {
     const PI: f32 = 3.141592653589793;
@@ -65,12 +95,15 @@ pub async fn get_planets() -> Result<Vec<Planet>, Error> {
         let response = reqwest::get(&url).await?.json::<PlanetsResponse>().await?;
 
         for swapi_planet in response.results {
+            // Using helper functions to build more data
             let diameter = swapi_planet.diameter;
             let population = swapi_planet.population;
             let surface_area = find_surface_area(&diameter);
             let comparison_factor = surface_area_relative_to_earth(surface_area);
             let population_word = num2word(&population);
+            let population_density = find_population_density(surface_area, &population);
 
+            // Builds the Struct
             let simple_planet = Planet {
                 name: swapi_planet.name,
                 rotation_period: swapi_planet.rotation_period, // time taken to rotate around its poles
@@ -84,6 +117,7 @@ pub async fn get_planets() -> Result<Vec<Planet>, Error> {
                 surface_water: swapi_planet.surface_water,
                 population: population,
                 population_word: population_word,
+                population_density: population_density,
                 url: swapi_planet.url,
             };
             planets.push(simple_planet);
