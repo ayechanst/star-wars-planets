@@ -1,31 +1,19 @@
 use crate::models::{self, Planet, PlanetsResponse, SwapiPlanet};
+use num2words::{Lang, Num2Words};
 use reqwest::Error;
 use std::collections::HashMap;
 
-pub fn sort_population(planets: &mut Vec<Planet>) -> Vec<(String, u64)> {
-    let mut sorted_populations = planets
-        .iter()
-        .filter_map(|planet| {
-            planet
-                .population
-                .parse::<u64>()
-                .ok()
-                .map(|pop| (planet.name.clone(), pop))
-        })
-        .collect::<Vec<(String, u64)>>();
-    sorted_populations.sort_by(|a, b| b.1.cmp(&a.1));
-    sorted_populations
+////////////////////////////// ORGANIZERS //////////////////////////////
+
+pub fn sort_population(planets: &mut Vec<Planet>) {
+    planets.sort_by(|a, b| {
+        let pop_a = a.population.parse::<u64>().unwrap_or(0);
+        let pop_b = b.population.parse::<u64>().unwrap_or(0);
+        pop_b.cmp(&pop_a) // Sort descending
+    });
 }
 
-pub fn count_climates(planets: &Vec<Planet>) -> HashMap<String, u32> {
-    let mut climate_hashmap = HashMap::new();
-    for planet in planets {
-        for climate in planet.climate.split(", ").map(|c| c.trim()) {
-            *climate_hashmap.entry(climate.to_string()).or_insert(0) += 1;
-        }
-    }
-    climate_hashmap
-}
+////////////////////////////// HELPERS /////////////////////////////////////
 
 pub fn find_surface_area(planet_diameter: &String) -> f32 {
     const PI: f32 = 3.141592653589793;
@@ -46,6 +34,29 @@ pub fn surface_area_relative_to_earth(planet_surface_area: f32) -> f32 {
     comparison_factor
 }
 
+pub fn num2word(population: &String) -> String {
+    let parsed_population: Result<i64, _> = population.parse();
+    match parsed_population {
+        Ok(pop) => Num2Words::new(pop as i64)
+            .lang(Lang::English)
+            .to_words()
+            .unwrap_or_else(|_| "Conversion Error".to_string()),
+        Err(_) => "Invalid Population Value".to_string(),
+    }
+}
+
+pub fn count_climates(planets: &Vec<Planet>) -> HashMap<String, u32> {
+    let mut climate_hashmap = HashMap::new();
+    for planet in planets {
+        for climate in planet.climate.split(", ").map(|c| c.trim()) {
+            *climate_hashmap.entry(climate.to_string()).or_insert(0) += 1;
+        }
+    }
+    climate_hashmap
+}
+
+//////////////////////////////// GETTER ///////////////////////////////////////
+
 pub async fn get_planets() -> Result<Vec<Planet>, Error> {
     let mut planets = Vec::<Planet>::new();
     let mut next_url = Some("https://swapi.dev/api/planets".to_string());
@@ -55,8 +66,11 @@ pub async fn get_planets() -> Result<Vec<Planet>, Error> {
 
         for swapi_planet in response.results {
             let diameter = swapi_planet.diameter;
+            let population = swapi_planet.population;
             let surface_area = find_surface_area(&diameter);
             let comparison_factor = surface_area_relative_to_earth(surface_area);
+            let population_word = num2word(&population);
+
             let simple_planet = Planet {
                 name: swapi_planet.name,
                 rotation_period: swapi_planet.rotation_period, // time taken to rotate around its poles
@@ -68,7 +82,8 @@ pub async fn get_planets() -> Result<Vec<Planet>, Error> {
                 gravity: swapi_planet.gravity,
                 terrain: swapi_planet.terrain,
                 surface_water: swapi_planet.surface_water,
-                population: swapi_planet.population,
+                population: population,
+                population_word: population_word,
                 url: swapi_planet.url,
             };
             planets.push(simple_planet);

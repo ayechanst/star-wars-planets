@@ -13,6 +13,7 @@ pub struct Planet {
     pub terrain: String,
     pub surface_water: String,
     pub population: String,
+    pub population_word: String,
     pub url: String,
 }
 
