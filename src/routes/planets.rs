@@ -10,3 +10,13 @@ pub async fn all_planets() -> Json<Vec<Planet>> {
     };
     Json(planets)
 }
+
+#[get("/planets/<id>")]
+pub async fn planet_by_index(id: usize) -> Option<Json<Planet>> {
+    let planets = match get_planets().await {
+        Ok(data) => data,
+        Err(_) => Vec::new(),
+    };
+    // planets.into_iter().nth(id).map(Json)
+    planets.get(id).cloned().map(Json)
+}

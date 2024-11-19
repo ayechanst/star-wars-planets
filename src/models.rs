@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Debug, Serialize)]
+#[derive(Clone, Deserialize, Debug, Serialize)]
 pub struct Planet {
     pub name: String,
     pub rotation_period: String,
