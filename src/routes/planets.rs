@@ -1,4 +1,7 @@
-use crate::{helpers, models::Planet};
+use crate::{
+    helpers::{self, sort_population},
+    models::Planet,
+};
 use helpers::get_planets;
 use rocket::{get, serde::json::Json};
 
@@ -17,6 +20,15 @@ pub async fn planet_by_index(id: usize) -> Option<Json<Planet>> {
         Ok(data) => data,
         Err(_) => Vec::new(),
     };
-    // planets.into_iter().nth(id).map(Json)
     planets.get(id).cloned().map(Json)
+}
+
+#[get("/planets/population")]
+pub async fn planets_by_population() -> Json<Vec<(String, u64)>> {
+    let mut planets = match get_planets().await {
+        Ok(data) => data,
+        Err(_) => Vec::new(),
+    };
+    let sorted_planets = sort_population(&mut planets);
+    rocket::serde::json::Json(sorted_planets)
 }

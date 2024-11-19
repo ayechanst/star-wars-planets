@@ -2,7 +2,7 @@ use rocket::{launch, routes};
 mod helpers;
 mod models;
 mod routes;
-use routes::planets::{all_planets, planet_by_index};
+use routes::planets::{all_planets, planet_by_index, planets_by_population};
 
 // let response = reqwest::get(next_url).await?.text().await?;
 
@@ -19,5 +19,8 @@ use routes::planets::{all_planets, planet_by_index};
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/api", routes![all_planets, planet_by_index])
+    rocket::build().mount(
+        "/api",
+        routes![all_planets, planet_by_index, planets_by_population],
+    )
 }
