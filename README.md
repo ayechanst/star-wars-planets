@@ -26,28 +26,30 @@ All thanks to the [Star Wars API](https://swapi.dev/)!
 
 ## 📔 Quickstart
 
-1. Install Rust
+### 1. Install Rust
 
 If Rust isn't installed, use [rustup](https://rustup.rs/)
 
-2. Clone the repo
+### 2. Clone the repo
 
-```shell
+```bash
 git clone <repo>
 cd <project-folder>
 ```
 
-3. Build the project
+### 3. Build the project
 
-```shell
+```bash
 cargo build
 ```
 
-4. Run the server
+### 4. Run the server
 
-```shell
+```bash
 cargo run
 ```
+
+### 5. Do what you want with the data!
 
 ```rust
 pub async fn fetch_planets_from_api() -> Result<Vec<Planet>, reqwest::Error> {
