@@ -1,5 +1,7 @@
 # Star Wars Planets
 
+An API server built with [Rust](https://www.rust-lang.org/) and [Rocket](https://rocket.rs/).
+
 - RESTful endpoints for querying planetary data
 - Data enrichment with calculated properties (e.g., surface area, population density)
 - Efficient pagination to fetch the complete dataset
@@ -49,7 +51,10 @@ cargo build
 cargo run
 ```
 
-### 5. Do what you want with the data!
+## 🏫 Example
+
+This server is used by my [other project](https://github.com/ayechanst/bevy-planets) which renders the planets side by side based on their size.
+Here is how I used the endpoint in that project:
 
 ```rust
 pub async fn fetch_planets_from_api() -> Result<Vec<Planet>, reqwest::Error> {
