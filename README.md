@@ -51,6 +51,9 @@ cargo build
 cargo run
 ```
 
+Then find the endpoint, which in my case looks like this: `🚀 Rocket has launched from http://127.0.0.1:8000`
+Replace the GET from the endpoints table above with your endpoint and voila!
+
 ## 🏫 Example
 
 This server is used by my [other project](https://github.com/ayechanst/bevy-planets) which renders the planets side by side based on their size.
