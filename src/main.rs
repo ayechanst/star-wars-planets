@@ -7,19 +7,6 @@ use routes::planets::{
     planets_by_size,
 };
 
-// let response = reqwest::get(next_url).await?.text().await?;
-
-// #[tokio::main]
-// async fn main() -> Result<(), Error> {
-//     let mut planets = get_planets().await?;
-//     // let climates = count_climates(&planets);
-//     let populations = sort_population(&mut planets);
-//     // println!("{:#?}", populations);
-//     println!("{:#?}", planets);
-//     // println!("{:#?}", climates);
-//     Ok(())
-// }
-
 #[launch]
 fn rocket() -> _ {
     rocket::build().mount(
